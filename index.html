@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>행운의 슬롯!</title>
+    <style>
+        @font-face {
+            font-family: 'DOSIyagiMedium';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/DOSIyagiMedium.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        * {
+            font-family: 'DOSIyagiMedium';
+        }
+        html, body {
+            overflow: hidden;
+            height: 100%;
+            margin: 0;
+            background-image: url('배경.png'); 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat;
+        }
+        .doors {
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative; 
+            height: 90vh;
+            opacity: 0; 
+            transition: opacity 0.5s ease;
+            visibility: hidden;
+        }
+
+        .door {
+            background: #fafafa;
+            width: 10vw;
+            height: 12vw;
+            overflow: hidden;
+            border-radius: 0px;
+            margin: 1vw;
+            position: relative;
+            box-shadow: inset 0 0 1vw rgba(0, 0, 0, 0.5);
+            color: #e74c3c;
+        }
+
+        .boxes {
+            position: absolute;
+            width: 100%;
+            transition: transform 0.1s linear; 
+        }
+
+        .box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 8rem;
+            height: 12vw; 
+        }
+
+        #object {
+            width: 50vw; 
+            height: auto;
+            position: absolute;
+            top: 55%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            z-index: 0; 
+        }
+        .slot1 { top: 31%; left: 33%; }
+        .slot2 { top: 31%; left: 44%; }
+        .slot3 { top: 31%; left: 55%; }
+        #luck {
+            z-index: 2;
+            font-size: 4vw;
+            position: absolute;
+            top: 6.5vw; 
+            left: 39%; 
+            transform: translate(-50%, -11.5vw);
+            transform: scaleY(1.5);
+            color: white;
+            letter-spacing: 0rem;
+            text-shadow: 
+                -5px -5px 0 black,
+                5px -5px 0 black,
+                -5px 5px 0 black,
+                5px 5px 0 black;
+        }
+        #rule {
+            z-index: 2;
+            font-size: 1vw;
+            position: absolute;
+            top: 27vw; 
+            left: 50%; 
+            transform: translate(-50%, -11.5vw);
+            color: white;
+            letter-spacing: -0.05rem;
+            line-height: 1.35vw;
+            text-align: center;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            margin: 0;
+        }
+        #rule2 {
+            z-index: 2;
+            font-size: 1vw;
+            position: absolute;
+            top: 31vw; 
+            left: 50%; 
+            transform: translate(-50%, -11.5vw);
+            color: white;
+            letter-spacing: -0.05rem;
+            line-height: 1.35vw;
+            text-align: center;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            margin: 0;
+        }
+        #next {
+            z-index: 2;
+            font-size: 1vw;
+            position: absolute;
+            top: 38.4vw; 
+            left: 61.7%; 
+            transform: translate(-50%, -11.5vw);
+            color: white;
+            letter-spacing: -0.05rem;
+            line-height: 1.35vw;
+            text-align: center;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            padding: 1rem;
+        }
+        #next:hover{
+            color: gray !important;
+            cursor: pointer;}
+        #next2 {
+            z-index: 2;
+            font-size: 1vw;
+            position: absolute;
+            top: 17.5vw; 
+            left: 50%; 
+            transform: translate(-50%, -11.5vw);
+            color: white;
+            letter-spacing: -0.05rem;
+            line-height: 1.35vw;
+            text-align: center;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            padding: 1rem;
+        }
+        #next2:hover{
+            color: gray !important;
+            cursor: pointer;}
+        #upbutton, #rebutton, #dbutton {
+            width: 6vw; 
+            height: auto;
+            position: absolute; 
+            top: 74%; 
+            transform: translate(-50%, -50%); 
+            z-index: 2; 
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        #upbutton { left: 39%; }
+        #rebutton { left: 50%; }
+        #dbutton { left: 61%; }
+        #upbutton:hover,
+        #rebutton:hover,
+        #dbutton:hover {
+            filter: brightness(0.8);
+        }
+        #startB {
+            width: 15vw; 
+            height: auto;
+            position: absolute; 
+            top: 48%; 
+            left: 50%;
+            transform: translate(-50%, -50%); 
+            z-index: 2; 
+            animation: pulse 1s infinite; 
+        }
+        #startB:hover { filter: brightness(0.8); }
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+        .greentext { color: green; }
+        .redtext { color: indianred; }
+        .bluetext { color: blue; }
+    </style>
+</head>
+<body>
+    <img src="슬롯.png" id="object">
+    <img src="업버튼.png" id="upbutton">
+    <img src="리버튼.png" id="rebutton">
+    <img src="다운버튼.png" id="dbutton">
+    <img src="스타트버튼.png" id="startB">
+    <audio src="slot.mp3" id="Ssound" loop></audio>
+    <div id="app">
+        <div class="doors">
+            <div class="door">
+                <div class="boxes"></div>
+            </div>
+            <div class="door">
+                <div class="boxes"></div>
+            </div>
+            <div class="door">
+                <div class="boxes"></div>
+            </div>
+        </div>  
+    <div id="luck">LUCKY♧SLOT</div>
+    <div id="next">▶</div>
+    <div id="rule">안녕하세요, LUCKY SLOT을 찾아주신 <span class="greentext" id="userName">행운아</span>님!<br>
+        슬롯을 돌리기 앞서, 저희 슬롯의 규칙을 설명드리겠습니다.<br><br>
+        슬롯은 <span class="greentext">스페이스바</span>로 멈출 수 있어요.<br>
+        모든 슬롯이 멈췄을 때, <span class="greentext">엔터</span>를 눌러 슬롯을 다시 돌릴 수 있어요.<br><br>
+        <span class="redtext">up!</span>을 클릭할수록 슬롯의 속도가 빨라져요.<br>
+        <span class="redtext">down!</span>을 클릭할수록 슬롯의 속도가 느려져요.<br>
+        <span class="redtext">re!</span>는 슬롯을 원래 속도로 되돌려줘요.<br>
+        이 세 개의 버튼을 통해 난이도를 조절해 보세요!</div>
+    <div id="rule2">슬롯이 나타나면 <span class="greentext">엔터</span>를 눌러 시작해 주세요.<br>
+        난이도 조절은 슬롯이 돌아가는 중에도 가능하답니다!<br>
+        <br>
+        그럼, 같은 숫자를 맞춰 오늘의 <span class="greentext">행운아</span>가 되어 보세요!♧
+    <div id="next2">▶</div>
+    </div>
+    <script>
+    const sound = document.getElementById("Ssound");
+    const items = Array.from({ length: 10 }, (_, i) => i.toString());
+    const doors = document.querySelectorAll('.door');
+    let spinning = false;
+    let intervalIds = [];
+    let isStopped = [false, false, false];
+    let currentSquare = 0; // 현재 멈출 슬롯
+    let speed = 100; 
+    const initialSpeed = 100; 
+    const boxHeight = 12 * (window.innerWidth / 100);
+
+    function init() {
+        for (const door of doors) {
+            const boxes = door.querySelector('.boxes');
+            boxes.innerHTML = ''; 
+            for (let i = 0; i < items.length; i++) {
+                const box = document.createElement('div');
+                box.classList.add('box');
+                box.textContent = items[i];
+                box.style.height = `${boxHeight}px`; // 박스 높이 설정
+                boxes.appendChild(box);
+            }
+
+            boxes.style.transform = `translateY(-${7 * boxHeight}px)`; 
+        }
+    }
+
+    function startSpin() {
+        if (spinning) return; 
+        spinning = true;
+        isStopped = [false, false, false]; 
+        init(); 
+        sound.play();
+
+        doors.forEach((door, i) => {
+            const boxes = door.querySelector('.boxes');
+            let scrollCount = 7; 
+
+            const delay = i * 100; 
+
+            setTimeout(() => {
+                boxes.style.transform = `translateY(-${scrollCount * boxHeight}px)`; 
+
+                const scrollAnimation = setInterval(() => {
+                    if (isStopped[i]) return; 
+                    scrollCount++;
+                    boxes.style.transform = `translateY(-${scrollCount * boxHeight}px)`; // 박스 높이에 맞춰 스크롤
+
+                    if (scrollCount >= items.length) {
+                        scrollCount = 0; 
+                        boxes.style.transform = `translateY(0)`;
+                    }
+                }, speed); 
+
+                intervalIds.push(scrollAnimation); 
+            }, delay);
+        });
+    }
+
+    function stopSlot(index) {
+        if (isStopped[index] || !spinning) return; 
+        isStopped[index] = true; 
+
+        const boxes = doors[index].querySelector('.boxes');
+        const totalBoxes = boxes.children.length;
+        const currentTransform = parseInt(boxes.style.transform.replace(/[^0-9-]/g, '')) || 0;
+
+        const position = Math.abs(currentTransform) / boxHeight % totalBoxes;
+
+        const stopIndex = (Math.floor(position) + Math.floor(totalBoxes / 2)) % totalBoxes; // 중앙 정렬을 위한 인덱스 조정
+        boxes.style.transform = `translateY(-${(stopIndex * boxHeight)}px)`; // 멈춘 위치 조정
+
+        console.log(`Slot ${index} stopped at index: ${stopIndex} with value: ${items[stopIndex]}`);
+
+        if (isStopped.every(stop => stop)) {
+            checkWinCondition(); 
+        }
+    }
+
+    function checkWinCondition() {
+        if (isStopped.every(stop => stop)) {
+            sound.pause();
+            sound.currentTime = 0;
+
+            const results = Array.from(doors).map(door => {
+                const boxes = door.querySelector('.boxes');
+                const totalBoxes = boxes.children.length;
+                const currentTransform = parseInt(boxes.style.transform.replace(/[^0-9-]/g, '')) || 0;
+                const position = Math.abs(currentTransform) / boxHeight % totalBoxes;
+
+                return items[(totalBoxes - Math.floor(position) - 1 + totalBoxes) % totalBoxes]; // 중앙 정렬을 위한 인덱스
+            });
+
+            console.log(`Results: ${results}`);
+
+            const isJackpot = results[0] === results[1] && results[1] === results[2];
+
+            if (isJackpot) {
+                alert("당신의 행운이 ♧잭팟!♧");
+                resetSlots(); 
+            }
+
+            clearAllIntervals();
+            spinning = false; 
+        }
+    }
+
+    function resetSlots() {
+        isStopped = [false, false, false];
+        init(); 
+    }
+
+    function clearAllIntervals() {
+        intervalIds.forEach(clearInterval);
+        intervalIds = [];
+    }
+
+    document.getElementById("upbutton").addEventListener("click", function() {
+        speed = Math.max(50, speed - 50);
+        updateSpeed();
+    });
+
+    document.getElementById("dbutton").addEventListener("click", function() {
+        speed += 50; 
+        updateSpeed(); 
+    });
+
+    document.getElementById("rebutton").addEventListener("click", function() {
+        speed = initialSpeed; 
+        updateSpeed(); // 
+    });
+
+    function updateSpeed() {
+        doors.forEach((door, index) => {
+            const boxes = door.querySelector('.boxes');
+            const totalBoxes = boxes.children.length;
+            let currentTransform = parseInt(boxes.style.transform.replace(/[^0-9-]/g, '')) || 0;
+            let scrollCount = Math.abs(currentTransform) / boxHeight; 
+
+            clearInterval(intervalIds[index]);
+
+            const delay = index * 100; 
+
+            setTimeout(() => {
+                intervalIds[index] = setInterval(() => {
+                    if (isStopped[index]) return;
+                    scrollCount++;
+                    boxes.style.transform = `translateY(-${scrollCount * boxHeight}px)`; // 박스 높이에 맞춰 스크롤
+
+                    if (scrollCount >= items.length) {
+                        scrollCount = 0; 
+                        boxes.style.transform = `translateY(0)`; 
+                    }
+                }, speed); 
+            }, delay);
+        });
+    }
+
+    window.addEventListener("keydown", function(event) {
+        if (event.code === "Enter") {
+            startSpin();
+        }
+        if (event.code === "Space") {
+            stopSlot(currentSquare); 
+            currentSquare = (currentSquare + 1) % 3;
+        }
+    });
+
+    init(); 
+
+    document.getElementById("startB").addEventListener("click", function() {
+        const userName = prompt("당신의 이름은?");
+        if (userName) {
+            document.getElementById("userName").textContent = userName;
+        }
+        const ruleElement = document.getElementById("rule");
+        ruleElement.style.display = 'block';
+        setTimeout(() => {
+            ruleElement.style.opacity = 1;
+        }, 50);
+        document.getElementById("startB").style.display = 'none';
+
+        const nextElement = document.getElementById("next");
+        nextElement.style.display = 'block'; 
+        setTimeout(() => {
+            nextElement.style.opacity = 1;
+        }, 50);
+    });
+
+    document.getElementById("next").addEventListener("click", function() {
+        const ruleElement = document.getElementById("rule");
+        const nextElement = document.getElementById("next");
+
+        ruleElement.style.opacity = 0;
+        nextElement.style.opacity = 0;
+
+        setTimeout(() => {
+            ruleElement.style.display = 'none';
+            nextElement.style.display = 'none';
+
+            const rule2Element = document.getElementById("rule2");
+            const next2Element = document.getElementById("next2");
+
+            rule2Element.style.display = 'block';
+            setTimeout(() => {
+                rule2Element.style.opacity = 1;
+            }, 50);
+
+            next2Element.style.display = 'block';
+            setTimeout(() => {
+                next2Element.style.opacity = 1;
+            }, 50);
+        }, 500);
+    });
+
+    document.getElementById("next2").addEventListener("click", function() {
+        const rule2Element = document.getElementById("rule2");
+        const next2Element = document.getElementById("next2");
+
+        rule2Element.style.opacity = 0;
+        next2Element.style.opacity = 0;
+
+        setTimeout(() => {
+            rule2Element.style.display = 'none';
+            next2Element.style.display = 'none';
+
+            const doors = document.querySelector('.doors');
+            doors.style.visibility = 'visible'; 
+            doors.style.opacity = 1; 
+            document.getElementById("upbutton").style.display = 'block';
+            document.getElementById("rebutton").style.display = 'block';
+            document.getElementById("dbutton").style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById("upbutton").style.opacity = 1;
+                document.getElementById("rebutton").style.opacity = 1;
+                document.getElementById("dbutton").style.opacity = 1;
+            }, 50);
+        }, 500);
+    });
+
+    window.addEventListener("blur", function() {
+        resetSquares(); 
+    });
+
+    function resetSquares() {
+        document.querySelectorAll('.slot .number').forEach(number => number.textContent = '0');
+    }
+    </script>
+</body>
+</html>
